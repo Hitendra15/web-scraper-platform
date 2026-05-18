@@ -1,0 +1,474 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Scraper</title>
+<link rel="stylesheet" href="{% static 'core/css/bootstrap.css' %}">
+<style>
+    body {
+        background: #f4f7fb;
+        font-size: 14px;
+        font-family: Arial, sans-serif;
+        color: #1f2937;
+    }
+    .navbar {
+        background: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 16px 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .navbar-brand {
+        font-size: 22px;
+        font-weight: 700;
+        color: #111827;
+    }
+    .card {
+        border: none;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+    }
+    .form-control {
+        height: 52px;
+        border-radius: 10px;
+        border: 1px solid #d1d5db;
+        padding: 0 16px;
+        font-size: 14px;
+        box-shadow: none !important;
+    }
+    .form-control:focus {
+        border-color: #111827;
+    }
+    .btn {
+        border-radius: 10px;
+        font-weight: 500;
+        height: 52px;
+        transition: 0.2s ease;
+    }
+    .btn-dark {
+        background: #111827;
+        border: none;
+    }
+    .btn-dark:hover {
+        background: #000;
+        transform: translateY(-1px);
+    }
+    .btn-danger {
+        border: none;
+    }
+    .table {
+        margin-bottom: 0;
+    }
+    .table thead {
+        background: #f9fafb;
+    }
+    .table thead th {
+        font-size: 13px;
+        text-transform: uppercase;
+        color: #6b7280;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 16px;
+    }
+    .table tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .table tbody tr:hover {
+        background: #f9fafb;
+    }
+    .table a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .table a:hover {
+        text-decoration: underline;
+    }
+    .badge-count {
+        background: #111827 !important;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 30px;
+    }
+    .empty-state {
+        padding: 50px 20px;
+        text-align: center;
+        color: #6b7280;
+    }
+    .empty-state p {
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: #374151;
+    }
+    .loader {
+        display: none;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #fff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        margin: auto;
+    }
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    table {
+        table-layout: fixed;
+        width: 100%;
+    }
+    td, th {
+        overflow-wrap: break-word;
+    }
+    .toast-success,
+    .toast-error {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        min-width: 280px;
+        padding: 14px 18px;
+        border-radius: 10px;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        z-index: 9999;
+        font-weight: 500;
+    }
+    .toast-success {
+        background: #dcfce7;
+        color: #166534;
+    }
+    .toast-error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .delete-all {
+        display: none;
+    }
+    @media(max-width:768px){
+        .navbar {
+            padding: 14px 18px;
+        }
+        .navbar-brand {
+            font-size: 18px;
+        }
+        .card-body {
+            padding: 18px;
+        }
+        .table thead {
+            display: none;
+        }
+        .table tbody tr {
+            display: block;
+            margin-bottom: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .table tbody td {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .table tbody td:last-child {
+            border-bottom: none;
+        }
+    }
+    .pagination {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    .pagination .page-item {
+        list-style: none;
+    }
+    .pagination .page-link {
+        min-width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        color: #374151;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+    .pagination .page-link:hover {
+        background: #111827;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+    .pagination .page-item.active .page-link {
+        background: #111827;
+        color: #fff;
+        box-shadow: 0 6px 16px rgba(17,24,39,0.25);
+    }
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    @media(max-width:768px){
+        .pagination {
+            gap: 6px;
+        }
+        .pagination .page-link {
+            min-width: 36px;
+            height: 36px;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+    }
+</style>
+</head>
+<script src="{% static 'core/js/jquery.js' %}"></script>
+<body>
+<nav class="navbar px-4">
+    <span class="navbar-brand">
+        🔗 Web Scraper Dashboard
+    </span>
+</nav>
+<div class="container py-4">
+<div class="card mb-3">
+    <div class="card-body">
+            <div class="row g-2">
+                <div class="col-md-10">
+                    <input type="text" name="url" class="form-control url"
+                        placeholder="Enter website URL..." required>
+                </div>
+                <div class="col-md-2 d-flex gap-2">
+                    <button type="button" class="btn btn-dark w-100 scrape">
+                        <span class="btn-text">Scrape</span>
+                        <div class="loader"></div>
+                    </button>
+                    <button type="button" class="btn btn-danger w-100 delete-all">
+                        Clear
+                    </button>
+                </div>
+            </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">Extracted Links</h6>
+            <span class="badge bg-secondary badge-count">
+                0 items
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Text</th>
+                        <th>URL</th>
+                    </tr>
+                </thead>
+                <tbody id="linkTableBody">
+                    <tr id="emptyRow">
+                        <td colspan="3" class="text-center text-muted">
+                            <div class="empty-state">
+                                <p>No links scraped yet</p>
+                                <small>Enter a website URL and start scraping</small>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center mt-4">
+                <ul class="pagination" id="pagination"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    function showToast(message, type = 'success') {
+        let toast = $('#toast');
+        if (!toast.length) {
+            $('body').append(`
+                <div id="toast" class="toast-success" style="display:none;">
+                    <span id="toast-message"></span>
+                    <span class="toast-close">&times;</span>
+                </div>
+            `);
+            toast = $('#toast');
+        }
+        toast.removeClass('toast-success toast-error')
+            .addClass(type === 'error' ? 'toast-error' : 'toast-success');
+        $('#toast-message').text(message);
+        toast.show();
+        setTimeout(function () {
+            toast.hide();
+        }, 4000);
+        $('#timelineDrawer').removeClass('open');
+        $('body').removeClass('drawer-open');
+    }
+
+    // load table
+    function loadTable(page = 1, scrape = false){
+        $('.btn-text').hide();
+        $('.loader').show();
+        $('.scrape').prop('disabled', true);
+        let formData = {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+            page: page
+        };
+        if(scrape){
+            formData.url = $(".url").val();
+        }
+        $.ajax({
+            type: "POST",
+            url:'{% url "scrape" %}',
+            data: formData,
+            success:function(res){
+                let tbody = $("#linkTableBody");
+                tbody.empty();
+                if(res.success){
+                    if(res.data.length === 0){
+                        $('.delete-all').hide();
+                        tbody.html(`
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">
+                                    No data available
+                                </td>
+                            </tr>
+                        `);
+                        $('#pagination').empty();
+                        return;
+                    }
+                    $('.delete-all').show();
+                    let count = ((res.current_page - 1) * 10) + 1;
+                    res.data.forEach(function(link){
+                    let address = link.address ? link.address : '#';
+                    let shortAddress = address.length > 50
+                        ? address.substring(0,50) + '...'
+                        : address;
+                    tbody.append(`
+                        <tr>
+                            <td>${count++}</td>
+                            <td>${link.name ? link.name : 'No Text'}</td>
+                            <td>
+                                <a href="${address}" target="_blank">
+                                    ${shortAddress}
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+                    $(".badge-count").text(
+                        res.total_items + " items"
+                    );
+                    renderPagination(
+                        res.current_page,
+                        res.total_pages
+                    );
+                }else{
+                    $('.delete-all').hide();
+                    tbody.html(`
+                        <tr>
+                            <td colspan="3"
+                                class="text-center text-danger fw-bold">
+                                ${res.error}
+                            </td>
+                        </tr>
+                    `);
+                    $('#pagination').empty();
+                }
+            },
+            complete:function(){
+                $('.btn-text').show();
+                $('.loader').hide();
+                $('.scrape').prop('disabled', false);
+            }
+        });
+    }
+
+    // rendering pagination
+    function renderPagination(current, total){
+        let pagination = $('#pagination');
+        pagination.empty();
+        for(let i = 1; i <= total; i++){
+            pagination.append(`
+                <li class="page-item ${i === current ? 'active' : ''}">
+                    <a href="#" class="page-link page-btn" data-page="${i}">
+                        ${i}
+                    </a>
+                </li>
+            `);
+        }
+    }
+
+    // rendering scrape content
+    $(document).on('click','.scrape',function(e){
+        e.preventDefault()
+        loadTable(1,true);
+    });
+
+    // pagination click
+    $(document).on('click', '.page-btn', function(e){
+        e.preventDefault();
+        let page = $(this).data('page');
+        loadTable(page);
+    });
+
+    // for delete
+    $(document).on('click', '.delete-all', function(e){
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            url: "{% url 'clear' %}",
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success:function(res){
+                if(res.success){
+                    showToast(res.message);
+                    $('[name="url"]').val('');
+                    $('.delete-all').hide();
+                    $('.badge-count').text('0 items');
+                    $('#pagination').empty();
+                    $('#linkTableBody').html(`
+                        <tr id="emptyRow">
+                            <td colspan="3"
+                                class="text-center text-muted">
+                                <div class="empty-state">
+                                    <p>No links scraped yet</p>
+                                    <small>
+                                        Enter a website URL and start scraping
+                                    </small>
+                                </div>
+                            </td>
+                        </tr>
+                    `);
+                } else {
+                    showToast(
+                        'Something went wrong!',
+                        'error'
+                    );
+                }
+            },
+            error:function(){
+                showToast(
+                    'Server error!',
+                    'error'
+                );
+            }
+        });
+    });
+</script>
+</body>
+</html>
