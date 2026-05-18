@@ -4,7 +4,7 @@
 
 ### Extract all links from any webpage instantly
 
-A modern web-based scraper built with Django that allows users to paste any website URL and instantly extract all `<a>` tag links present on that page.
+A modern Django-based web scraper that allows users to paste any website URL and instantly extract all `<a>` tag links present on that page.
 
 <br>
 
@@ -29,14 +29,11 @@ A modern web-based scraper built with Django that allows users to paste any webs
 ✅ Internal & external link extraction  
 ✅ Copy extracted links instantly  
 ✅ User-friendly dashboard  
-✅ Mobile responsive design  
 ✅ Simple and lightweight architecture  
 
 ---
 
 # 📸 Screenshots
-
----
 
 ## 🏠 Home Page
 
@@ -50,19 +47,19 @@ A modern web-based scraper built with Django that allows users to paste any webs
 
 ---
 
-## 🔎 Invalid Links Error
+## ❌ Invalid URL Error
 
-<img src="screenshots/extracted_links.png" width="100%" alt="Invalid Link Page">
+<img src="screenshots/invalid_url.png" width="100%" alt="Invalid URL Page">
 
 ---
 
 # 🚀 How It Works
 
-1. Enter any website URL
-2. Click on **Extract Links**
-3. The scraper fetches webpage HTML
-4. All `<a>` tag links are extracted
-5. Results are displayed instantly
+1. Enter any website URL  
+2. Click on **Extract Links**  
+3. The scraper fetches webpage HTML  
+4. All `<a>` tag links are extracted  
+5. Results are displayed instantly  
 
 ---
 
@@ -82,14 +79,14 @@ A modern web-based scraper built with Django that allows users to paste any webs
 # 📂 Project Structure
 
 ```bash
-scrapper/
-│
+web-scraper-platform/
+
 ├── core/
 ├── link/
-├── scrapper/
 ├── screenshots/
-├── .env.example/
-├── .gitignore/
+├── static/
+├── templates/
+├── .gitignore
 ├── manage.py
 ├── README.md
-├── requirements.txt/
+├── requirements.txt
